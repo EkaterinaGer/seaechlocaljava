@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Локальный поисковый движок</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>DASHBOARD</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon"><img th:src="@{/icons/dashboard.svg}" alt="Dashboard"></span>
+                    <span class="nav-text">DASHBOARD</span>
+                </a>
+                <a href="#" class="nav-item" data-page="management">
+                    <span class="nav-icon"><img th:src="@{/icons/settings.svg}" alt="Settings"></span>
+                    <span class="nav-text">MANAGEMENT</span>
+                </a>
+                <a href="#" class="nav-item" data-page="search">
+                    <span class="nav-icon"><img th:src="@{/icons/search.svg}" alt="Search"></span>
+                    <span class="nav-text">SEARCH</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page active">
+                <div class="page-header">
+                    <h1>DASHBOARD</h1>
+                </div>
+                
+                <!-- Statistics Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statSites">0</div>
+                        <div class="stat-label">sites</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statPages">0</div>
+                        <div class="stat-label">pages</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statLemmas">0</div>
+                        <div class="stat-label">lemmas</div>
+                    </div>
+                </div>
+
+                <!-- Sites List -->
+                <div class="sites-section">
+                    <div id="sitesList" class="sites-list">
+                        <!-- Sites will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Management Page -->
+            <div id="management-page" class="page">
+                <div class="page-header">
+                    <h1>MANAGEMENT</h1>
+                </div>
+                
+                <div class="management-content">
+                    <div class="action-panel">
+                        <h2>Индексация сайта</h2>
+                        <div class="form-group">
+                            <input type="text" id="crawlUrl" placeholder="Введите URL сайта" value="https://example.com">
+                        </div>
+                        <div class="button-group">
+                            <button onclick="startIndexing()" class="btn-primary">Начать индексацию</button>
+                            <button onclick="stopIndexing()" class="btn-danger">Остановить индексацию</button>
+                        </div>
+                        <div id="crawlStatus" class="status-message"></div>
+                    </div>
+                    
+                    <div class="action-panel">
+                        <h2>Индексация страницы</h2>
+                        <div class="form-group">
+                            <input type="text" id="pageUrl" placeholder="Введите URL страницы">
+                        </div>
+                        <div class="button-group">
+                            <button onclick="indexPage()" class="btn-primary">Индексировать страницу</button>
+                        </div>
+                        <div id="pageStatus" class="status-message"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Page -->
+            <div id="search-page" class="page">
+                <div class="page-header">
+                    <h1>SEARCH</h1>
+                </div>
+                
+                <div class="search-content">
+                    <div class="search-panel">
+                        <div class="form-group">
+                            <input type="text" id="searchQuery" placeholder="Введите поисковый запрос">
+                        </div>
+                        <div class="button-group">
+                            <button onclick="performSearch()" class="btn-primary">Поиск</button>
+                        </div>
+                        <div id="searchResults" class="search-results"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>
