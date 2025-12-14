@@ -36,9 +36,6 @@ public class SearchService {
     
     private final Lemmatizer lemmatizer = new Lemmatizer();
     
-    /**
-     * Выполняет поиск по запросу согласно алгоритму
-     */
     public List<SearchResult> search(String query, String siteUrl) {
         if (query == null || query.trim().isEmpty()) {
             return Collections.emptyList();
