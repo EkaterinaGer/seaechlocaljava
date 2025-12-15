@@ -1,35 +1,35 @@
 package com.searchlocal.util;
 
+import com.github.demidko.aot.WordformMeaning;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static com.github.demidko.aot.WordformMeaning.lookupForMeanings;
+
 /**
  * Класс для лемматизации текста
- * Упрощенная версия без внешних морфологических библиотек
+ * Использует библиотеку AOT для морфологического анализа русского языка
  */
 public class Lemmatizer {
     private static final Logger logger = LoggerFactory.getLogger(Lemmatizer.class);
     
     private static final Pattern WORD_PATTERN = Pattern.compile("[\\p{L}]+");
     
-    // Простой список служебных слов для исключения
-    private static final Set<String> STOP_WORDS = Set.of(
-            "и", "в", "на", "с", "по", "для", "от", "до", "из", "к", "о", "у", "за", "со",
-            "а", "но", "или", "что", "как", "так", "это", "то", "же", "бы", "ли", "не",
-            "он", "она", "они", "мы", "вы", "я", "ты", "его", "её", "их", "мой", "твой",
-            "был", "была", "было", "были", "есть", "будет", "быть"
+    // Служебные части речи для исключения
+    private static final Set<String> EXCLUDED_POS = Set.of(
+            "МЕЖД", "СОЮЗ", "ПРЕДЛ", "ЧАСТ"
     );
     
     public Lemmatizer() {
-        // Упрощенная версия не требует инициализации
+        // AOT библиотека не требует явной инициализации
     }
     
     /**
      * Извлекает леммы из текста и возвращает их количество
-     * В упрощенной версии просто нормализует слова (приводит к нижнему регистру)
+     * Использует библиотеку AOT для получения нормальных форм слов
      */
     public Map<String, Integer> getLemmas(String text) {
         Map<String, Integer> lemmas = new HashMap<>();
@@ -44,19 +44,46 @@ public class Lemmatizer {
                 .split("\\s+");
         
         for (String word : words) {
-            // Пропускаем короткие слова и служебные части речи
+            // Пропускаем короткие слова
             if (word.length() < 2 || !WORD_PATTERN.matcher(word).matches()) {
                 continue;
             }
             
-            // Пропускаем стоп-слова
-            if (STOP_WORDS.contains(word)) {
-                continue;
+            try {
+                // Получаем морфологическую информацию о слове
+                List<WordformMeaning> meanings = lookupForMeanings(word);
+                
+                if (meanings.isEmpty()) {
+                    // Если слово не найдено в словаре, используем его как есть
+                    lemmas.put(word, lemmas.getOrDefault(word, 0) + 1);
+                    continue;
+                }
+                
+                // Берем первое значение (основное)
+                WordformMeaning meaning = meanings.get(0);
+                
+                // Проверяем часть речи через морфологию
+                String morphologyStr = meaning.getMorphology().toString();
+                boolean isExcluded = EXCLUDED_POS.stream()
+                        .anyMatch(morphologyStr::contains);
+                
+                if (isExcluded) {
+                    continue;
+                }
+                
+                // Получаем лемму (нормальную форму) - метод возвращает WordformMeaning, нужно преобразовать в String
+                WordformMeaning lemmaMeaning = meaning.getLemma();
+                if (lemmaMeaning != null) {
+                    String lemma = lemmaMeaning.toString();
+                    if (!lemma.isEmpty()) {
+                        lemmas.put(lemma.toLowerCase(), lemmas.getOrDefault(lemma.toLowerCase(), 0) + 1);
+                    }
+                }
+            } catch (Exception e) {
+                // Если произошла ошибка при обработке слова, используем его как есть
+                logger.debug("Ошибка при обработке слова {}: {}", word, e.getMessage());
+                lemmas.put(word, lemmas.getOrDefault(word, 0) + 1);
             }
-            
-            // В упрощенной версии используем слово как есть (уже в нижнем регистре)
-            String lemma = word;
-            lemmas.put(lemma, lemmas.getOrDefault(lemma, 0) + 1);
         }
         
         return lemmas;

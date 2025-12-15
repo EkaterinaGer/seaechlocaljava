@@ -54,8 +54,12 @@
             <scope>runtime</scope>
         </dependency>
         
-        <!-- Lucene Morphology для лемматизации - временно отключено из-за проблем с доступом к репозиторию -->
-        <!-- Используется упрощенная версия лемматизатора -->
+        <!-- AOT (Автоматическая Обработка Текста) для лемматизации русского языка -->
+        <dependency>
+            <groupId>com.github.demidko</groupId>
+            <artifactId>aot</artifactId>
+            <version>2025.11.25</version>
+        </dependency>
 
         <!-- Spring Boot Data JPA -->
         <dependency>
@@ -85,6 +89,10 @@
     </dependencies>
     
     <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
         <repository>
             <id>skillbox-gitlab</id>
             <url>https://gitlab.skillbox.ru/api/v4/projects/263574/packages/maven</url>
