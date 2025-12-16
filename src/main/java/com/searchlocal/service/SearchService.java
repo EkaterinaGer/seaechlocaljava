@@ -9,7 +9,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,19 +21,23 @@ public class SearchService {
     // Процент страниц, при превышении которого лемма исключается (80%)
     private static final double MAX_LEMMA_PERCENTAGE = 0.8;
     
-    @Autowired
-    private LemmaRepository lemmaRepository;
-    
-    @Autowired
-    private IndexRepository indexRepository;
-    
-    @Autowired
-    private PageRepository pageRepository;
-    
-    @Autowired
-    private SiteRepository siteRepository;
+    private final LemmaRepository lemmaRepository;
+    private final IndexRepository indexRepository;
+    private final PageRepository pageRepository;
+    private final SiteRepository siteRepository;
     
     private final Lemmatizer lemmatizer = new Lemmatizer();
+    
+    public SearchService(
+            LemmaRepository lemmaRepository,
+            IndexRepository indexRepository,
+            PageRepository pageRepository,
+            SiteRepository siteRepository) {
+        this.lemmaRepository = lemmaRepository;
+        this.indexRepository = indexRepository;
+        this.pageRepository = pageRepository;
+        this.siteRepository = siteRepository;
+    }
     
     public List<SearchResult> search(String query, String siteUrl) {
         if (query == null || query.trim().isEmpty()) {

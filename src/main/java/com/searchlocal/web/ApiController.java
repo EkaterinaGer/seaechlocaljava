@@ -9,7 +9,6 @@ import com.searchlocal.service.SearchService;
 import com.searchlocal.model.SearchResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,26 +22,30 @@ import java.util.stream.Collectors;
 public class ApiController {
     private static final Logger logger = LoggerFactory.getLogger(ApiController.class);
     
-    @Autowired
-    private CrawlingService crawlingService;
+    private final CrawlingService crawlingService;
+    private final IndexingService indexingService;
+    private final SearchService searchService;
+    private final SiteRepository siteRepository;
+    private final PageRepository pageRepository;
+    private final LemmaRepository lemmaRepository;
+    private final IndexRepository indexRepository;
     
-    @Autowired
-    private IndexingService indexingService;
-    
-    @Autowired
-    private SearchService searchService;
-    
-    @Autowired
-    private SiteRepository siteRepository;
-    
-    @Autowired
-    private PageRepository pageRepository;
-    
-    @Autowired
-    private LemmaRepository lemmaRepository;
-    
-    @Autowired
-    private IndexRepository indexRepository;
+    public ApiController(
+            CrawlingService crawlingService,
+            IndexingService indexingService,
+            SearchService searchService,
+            SiteRepository siteRepository,
+            PageRepository pageRepository,
+            LemmaRepository lemmaRepository,
+            IndexRepository indexRepository) {
+        this.crawlingService = crawlingService;
+        this.indexingService = indexingService;
+        this.searchService = searchService;
+        this.siteRepository = siteRepository;
+        this.pageRepository = pageRepository;
+        this.lemmaRepository = lemmaRepository;
+        this.indexRepository = indexRepository;
+    }
     
     /**
      * Запуск индексации сайта

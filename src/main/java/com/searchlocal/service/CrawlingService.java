@@ -9,7 +9,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,20 +23,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class CrawlingService {
     private static final Logger logger = LoggerFactory.getLogger(CrawlingService.class);
     
-    @Autowired
-    private SiteRepository siteRepository;
+    private final SiteRepository siteRepository;
+    private final PageRepository pageRepository;
+    private final LemmaRepository lemmaRepository;
+    private final IndexRepository indexRepository;
+    private final IndexingService indexingService;
     
-    @Autowired
-    private PageRepository pageRepository;
-    
-    @Autowired
-    private LemmaRepository lemmaRepository;
-    
-    @Autowired
-    private IndexRepository indexRepository;
-    
-    @Autowired
-    private IndexingService indexingService;
+    public CrawlingService(
+            SiteRepository siteRepository,
+            PageRepository pageRepository,
+            LemmaRepository lemmaRepository,
+            IndexRepository indexRepository,
+            IndexingService indexingService) {
+        this.siteRepository = siteRepository;
+        this.pageRepository = pageRepository;
+        this.lemmaRepository = lemmaRepository;
+        this.indexRepository = indexRepository;
+        this.indexingService = indexingService;
+    }
     
     private final Lemmatizer lemmatizer = new Lemmatizer();
     private final Map<String, AtomicBoolean> stopFlags = new ConcurrentHashMap<>();

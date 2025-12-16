@@ -7,7 +7,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,17 +20,21 @@ import java.util.Optional;
 public class IndexingService {
     private static final Logger logger = LoggerFactory.getLogger(IndexingService.class);
     
-    @Autowired
-    private SiteRepository siteRepository;
+    private final SiteRepository siteRepository;
+    private final PageRepository pageRepository;
+    private final LemmaRepository lemmaRepository;
+    private final IndexRepository indexRepository;
     
-    @Autowired
-    private PageRepository pageRepository;
-    
-    @Autowired
-    private LemmaRepository lemmaRepository;
-    
-    @Autowired
-    private IndexRepository indexRepository;
+    public IndexingService(
+            SiteRepository siteRepository,
+            PageRepository pageRepository,
+            LemmaRepository lemmaRepository,
+            IndexRepository indexRepository) {
+        this.siteRepository = siteRepository;
+        this.pageRepository = pageRepository;
+        this.lemmaRepository = lemmaRepository;
+        this.indexRepository = indexRepository;
+    }
     
     private final Lemmatizer lemmatizer = new Lemmatizer();
     
