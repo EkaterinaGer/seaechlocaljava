@@ -42,8 +42,11 @@ public class IndexingService {
      * Индексирует отдельную страницу
      */
     @Transactional
-    public void indexPage(String url, String siteUrl) {
+    public void indexPage(String url) {
         try {
+            // Извлекаем siteUrl из URL
+            String siteUrl = extractSiteUrl(url);
+            
             // Проверяем, что страница принадлежит указанному сайту
             if (!url.startsWith(siteUrl)) {
                 throw new IllegalArgumentException("Страница не принадлежит указанному сайту");
@@ -147,6 +150,18 @@ public class IndexingService {
         
         // Удаляем страницу
         pageRepository.delete(page);
+    }
+    
+    /**
+     * Извлекает базовый URL сайта из полного URL страницы
+     */
+    private String extractSiteUrl(String pageUrl) {
+        try {
+            URI uri = new URI(pageUrl);
+            return uri.getScheme() + "://" + uri.getHost();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Некорректный URL");
+        }
     }
     
     /**
